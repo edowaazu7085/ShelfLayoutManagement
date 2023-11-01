@@ -1,0 +1,153 @@
+syntax = "proto3";
+
+option csharp_namespace = "ShelfLayoutManagement.Common.Shelf";
+
+package shelf;
+
+service Shelves {
+  rpc ListCabinets(ListCabinetsRequest) returns (ListCabinetsResponse);
+  rpc StreamCabinets(StreamCabinetsRequest) returns (stream Cabinet);
+  rpc CreateCabinet(CreateCabinetRequest) returns (Cabinet);
+  rpc GetCabinet(GetCabinetRequest) returns (Cabinet);
+  rpc UpdateCabinet(UpdateCabinetRequest) returns (Cabinet);
+  rpc DeleteCabinet(DeleteCabinetRequest) returns (Empty);
+    
+  rpc CreateRow(CreateRowRequest) returns (Row);
+  rpc GetRow(GetRowRequest) returns (Row);
+  rpc UpdateRow(UpdateRowRequest) returns (Row);
+  rpc DeleteRow(DeleteRowRequest) returns (Empty);
+
+  rpc CreateLane(CreateLaneRequest) returns (Lane);
+  rpc GetLane(GetLaneRequest) returns (Lane);
+  rpc UpdateLane(UpdateLaneRequest) returns (Lane);
+  rpc DeleteLane(DeleteLaneRequest) returns (Empty);
+
+  rpc SwapProductByLanes(SwapProductByLanesRequest) returns (SwapProductByLanesResponse);
+}
+
+message Empty {}
+
+enum CabinetField{
+    CABINET_FIELD_NUMBER  = 0;
+}
+
+message ListCabinetsRequest {
+    int32 page_size = 1;
+    int32 page = 2;
+    CabinetField order_by = 3;
+}
+
+message ListCabinetsResponse {
+  repeated Cabinet cabinets = 1;
+}
+
+message StreamCabinetsRequest {
+    string order_by = 1;
+}
+
+message CreateCabinetRequest{
+    Cabinet cabinet = 1;
+}
+
+message GetCabinetRequest{
+    int32 cabinet_number = 1;
+}
+
+message UpdateCabinetRequest{
+    Cabinet cabinet = 1;
+}
+
+message DeleteCabinetRequest{
+    int32 number = 1;
+}
+
+message CreateRowRequest{
+    int32 cabinet_number = 1;  
+    Row row = 2;
+}
+
+message GetRowRequest{
+    int32 cabinet_number = 1;
+    int32 row_number = 2;
+}
+
+message UpdateRowRequest{
+    int32 cabinet_number = 1;  
+    Row row = 2;
+}
+
+message DeleteRowRequest{
+    int32 cabinet_number = 1;
+    int32 row_number = 2;
+}
+
+message CreateLaneRequest{
+    int32 cabinet_number = 1;
+    int32 row_number = 2; 
+    Lane lane = 3;
+}
+
+message GetLaneRequest{
+    int32 cabinet_number = 1;
+    int32 row_number = 2; 
+    int32 lane_number = 3; 
+}
+
+message UpdateLaneRequest{
+    int32 cabinet_number = 1;
+    int32 row_number = 2; 
+    Lane lane = 3;
+}
+
+message DeleteLaneRequest{
+    int32 cabinet_number = 1;
+    int32 row_number = 2; 
+    int32 lane_number = 3; 
+}
+
+message SwapProductByLanesRequest{
+    int32 source_cabinet_number = 1;
+    int32 source_row_number = 2;
+    int32 source_lane_number = 3;
+    int32 target_cabinet_number = 4;
+    int32 target_row_number = 5;
+    int32 target_lane_number = 6;
+}
+
+message SwapProductByLanesResponse {
+    bool result = 1;
+}
+
+message Lane {
+  int32 number = 1;
+  string jan_code = 2;
+  int32 quantity = 3;
+  int32 position_x = 4;
+}
+
+message Row {
+  int32 number = 1;
+  repeated Lane lanes = 2;
+  int32 position_z = 3;
+  message Size {
+    int32 height = 1;
+  }
+  Size size = 4;
+}
+
+message Cabinet {
+  int32 number = 1;
+  repeated Row rows = 2;
+  message Position {
+    int32 x = 1;
+    int32 y = 2;
+    int32 z = 3;
+  }
+  Position position = 3;
+  message Size {
+    int32 width = 1;
+    int32 depth = 2;
+    int32 height = 3;
+  }
+  Size size = 4;
+}
